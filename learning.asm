@@ -1,3 +1,4 @@
+
 .data
 
 invalidNum: .asciiz "Invalid number entered"
@@ -33,7 +34,6 @@ main:
         beq $t0, 3, backgroundYellow
         beq $t0, 4, backgroundGreen
         beq $t0, 5, backgroundBlue
-
         beq $t0, 6, exit
         
         j while
@@ -49,39 +49,125 @@ invalid:
     syscall
 
 backgroundRed:
-	#print string
-	addi $v0,$zero,4		#put syscall service into v0
-	la $a0,	red		#put address of string (input) into a0
-	syscall				#actually print string! (this works!)
-	jr $ra 
+    # initialize the memory address for the bitmap
+    addi $s0, $zero, 0       # set $s0 to zero
+    lui $s0, 0x1001          # load upper register with 0x1001
+    addi $s0, $s0, 0x0000   # add lower 16 bits of 0x0000 to $s0
+
+    # set the color value for the entire bitmap
+    addi $t0, $zero, 0xff0000 # set $t0 to the desired color value
+
+    # loop through each pixel in the bitmap and store the color value
+    addi $t1, $zero, 0       # set $t1 to 0 (loop counter)
+    LoopR:
+        sw $t0, 0($s0)       # store the color value at the memory location pointed to by $s0
+        addi $t1, $t1, 1     # increment the loop counter
+        addi $s0, $s0, 4     # increment the memory address pointer by 1 byte (the size of a pixel)
+        bne $t1, 131072, LoopR # loop until the counter reaches 25600 (the number of pixels in the bitmap)
+
+
+
+        #print string
+        addi $v0,$zero,4		#put syscall service into v0
+        la $a0,	red		#put address of string (input) into a0
+        syscall				#actually print string! (this works!)
+        jr $ra 
 	
 backgroundOrange:
-	#print string
-	addi $v0,$zero,4		#put syscall service into v0
-	la $a0,	orange		#put address of string (input) into a0
-	syscall				#actually print string! (this works!)
-	jr $ra 
+    # initialize the memory address for the bitmap
+    addi $s0, $zero, 0       # set $s0 to zero
+    lui $s0, 0x1001          # load upper register with 0x1001
+    addi $s0, $s0, 0x0000   # add lower 16 bits of 0x0000 to $s0
+
+    # set the color value for the entire bitmap
+    addi $t0, $zero, 0xffa500  # set $t0 to the desired color value
+
+    # loop through each pixel in the bitmap and store the color value
+    addi $t1, $zero, 0       # set $t1 to 0 (loop counter)
+    LoopO:
+        sw $t0, 0($s0)       # store the color value at the memory location pointed to by $s0
+        addi $t1, $t1, 1     # increment the loop counter
+        addi $s0, $s0, 4     # increment the memory address pointer by 1 byte (the size of a pixel)
+        bne $t1, 131072, LoopO # loop until the counter reaches 25600 (the number of pixels in the bitmap)
+        #print string
+        addi $v0,$zero,4		#put syscall service into v0
+        la $a0,	orange		#put address of string (input) into a0
+        syscall				#actually print string! (this works!)
+        jr $ra 
+
+
+
+
 
 backgroundYellow:
-	#print string
-	addi $v0,$zero,4		#put syscall service into v0
-	la $a0,	yellow		#put address of string (input) into a0
-	syscall				#actually print string! (this works!)
-	jr $ra 
+    # initialize the memory address for the bitmap
+    addi $s0, $zero, 0       # set $s0 to zero
+    lui $s0, 0x1001          # load upper register with 0x1001
+    addi $s0, $s0, 0x0000   # add lower 16 bits of 0x0000 to $s0
+
+    # set the color value for the entire bitmap
+    addi $t0, $zero, 0xffff00  # set $t0 to the desired color value
+
+    # loop through each pixel in the bitmap and store the color value
+    addi $t1, $zero, 0       # set $t1 to 0 (loop counter)
+    LoopY:
+        sw $t0, 0($s0)       # store the color value at the memory location pointed to by $s0
+        addi $t1, $t1, 1     # increment the loop counter
+        addi $s0, $s0, 4     # increment the memory address pointer by 1 byte (the size of a pixel)
+        bne $t1, 131072, LoopY # loop until the counter reaches 25600 (the number of pixels in the bitmap)
+        #print string
+        addi $v0,$zero,4		#put syscall service into v0
+        la $a0,	yellow		#put address of string (input) into a0
+        syscall				#actually print string! (this works!)
+        jr $ra 
+	
+	
+	
+	
 	
 backgroundGreen:
-	#print string
-	addi $v0,$zero,4		#put syscall service into v0
-	la $a0,	green		#put address of string (input) into a0
-	syscall				#actually print string! (this works!)
-	jr $ra 
+    # initialize the memory address for the bitmap
+    addi $s0, $zero, 0       # set $s0 to zero
+    lui $s0, 0x1001          # load upper register with 0x1001
+    addi $s0, $s0, 0x0000   # add lower 16 bits of 0x0000 to $s0
+
+    # set the color value for the entire bitmap
+    addi $t0, $zero, 0x008000  # set $t0 to the desired color value
+
+    # loop through each pixel in the bitmap and store the color value
+    addi $t1, $zero, 0       # set $t1 to 0 (loop counter)
+    LoopG:
+        sw $t0, 0($s0)       # store the color value at the memory location pointed to by $s0
+        addi $t1, $t1, 1     # increment the loop counter
+        addi $s0, $s0, 4     # increment the memory address pointer by 1 byte (the size of a pixel)
+        bne $t1, 131072, LoopG # loop until the counter reaches 25600 (the number of pixels in the bitmap)
+        #print string
+        addi $v0,$zero,4		#put syscall service into v0
+        la $a0,	green		#put address of string (input) into a0
+        syscall				#actually print string! (this works!)
+        jr $ra 
 
 backgroundBlue:
-	#print string
-	addi $v0,$zero,4		#put syscall service into v0
-	la $a0,	blue		#put address of string (input) into a0
-	syscall				#actually print string! (this works!)
-	jr $ra 
+    # initialize the memory address for the bitmap
+    addi $s0, $zero, 0       # set $s0 to zero
+    lui $s0, 0x1001          # load upper register with 0x1001
+    addi $s0, $s0, 0x0000   # add lower 16 bits of 0x0000 to $s0
+
+    # set the color value for the entire bitmap
+    addi $t0, $zero, 0x0000ff  # set $t0 to the desired color value
+
+    # loop through each pixel in the bitmap and store the color value
+    addi $t1, $zero, 0       # set $t1 to 0 (loop counter)
+    LoopB:
+        sw $t0, 0($s0)       # store the color value at the memory location pointed to by $s0
+        addi $t1, $t1, 1     # increment the loop counter
+        addi $s0, $s0, 4     # increment the memory address pointer by 1 byte (the size of a pixel)
+        bne $t1, 131072, LoopB # loop until the counter reaches 25600 (the number of pixels in the bitmap)
+        #print string
+        addi $v0,$zero,4		#put syscall service into v0
+        la $a0,	blue		#put address of string (input) into a0
+        syscall				#actually print string! (this works!)
+        jr $ra 
 
 
 
@@ -94,16 +180,3 @@ options:
 
 
 
-
-
-
-
-
-
-
-
-
-	
-
-
-	
