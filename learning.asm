@@ -17,6 +17,7 @@ red:     .asciiz "background colour set to Red!\n"
 
 staveMessage: .asciiz "The stave has been drawn"
 clsMessage: .asciiz "the screen has been cleared!"
+stavePrompt: .asciiz "select the row the top of the stave should start(240 - 80)\n"
 colorNames:
          .word   orange, yellow, green, blue, red
 
@@ -81,8 +82,11 @@ invalid:
 
 clearScreen:
 
+#to clear stove ect
+
 	
 backgroundColour:
+
     # initialize the memory address for the bitmap
     addi $s0, $zero, 0       # set $s0 to zero
     lui $s0, 0x1001          # load upper register with 0x1001
@@ -108,14 +112,33 @@ backgroundColour:
         jr $ra 
         
       cls:
+      	#if you run this option before the user picks a background colour it will return an error 
+      	# beq and check if theres a colour inside the background colour varible if not put black in the variable since the default colour is black then continue
         #print colour
         addi $v0,$zero,4		#put syscall service into v0
         la $a0,	clsMessage		#put address of string (input) into a0
         syscall				#actually print string! (this works!)
         jr $ra 
-      
+        
        
 stave:
+	loop:
+		#print string
+		addi $v0,$zero,4		#put syscall service into v0
+		la  $a0, stavePrompt			#put address of string (input) into a0
+		syscall				#actually print string! (this works!)
+	
+	
+        	#put user input in $t0
+        	li $v0, 5 
+        	syscall
+        	move $t9, $v0
+        	blt $t9, 20, loop
+        	bgt $t9, 210, loop
+        	
+        	
+        	sll $t9, $t9, 11 # shift $t9 left by 11 bits and store result in $t9
+
 # initialize the memory address for the bitmap
 addi $s0, $zero, 0      # set $s0 to zero
 lui $s0, 0x1001         # load upper register with 0x1001
@@ -129,7 +152,7 @@ addi $t1, $zero, 0      # set $t1 to 0 (loop counter)
 
 
 # skip the first 8 pixels in the first row
-addi $s0, $s0, 221184     # skip the first 8 pixels (32 bytes)
+add  $s0, $s0, $t9     # skip the first 8 pixels (32 bytes)
 
 li $t2, 5       # set $t2 to 5 (the number of times to run the loop)
 
